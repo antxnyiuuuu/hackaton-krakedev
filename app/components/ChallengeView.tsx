@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import * as XLSX from "xlsx";
 
 interface Props {
   onNext: () => void;
@@ -75,41 +74,75 @@ export function ChallengeView({ onNext }: Props) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="flex flex-col items-center justify-center min-h-screen text-center px-4"
+      className="flex flex-col items-center justify-center min-h-[100dvh] min-h-screen py-6 sm:py-8 px-3 sm:px-4 w-full max-w-4xl mx-auto"
     >
-      <div className="mb-10 relative z-50 group">
-        <div className="absolute inset-0 bg-red-600/20 blur-3xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
-        <img 
-          src="/images.png" 
-          alt="Krakedev Logo" 
-          onClick={handleLogoClick}
-          className="relative h-40 md:h-64 w-auto object-contain mx-auto opacity-100 drop-shadow-[0_0_30px_rgba(220,38,38,0.8)] cursor-pointer transition-transform duration-500 hover:scale-105" 
-        />
-      </div>
-
       <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
+        initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        transition={{ delay: 0.2 }}
-        className="mb-4"
+        transition={{ delay: 0.05 }}
+        className="mb-2.5 sm:mb-3 w-full flex justify-center"
       >
-        <span className="bg-red-900/40 border border-red-500/50 text-red-400 px-4 py-1.5 rounded-full text-sm font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(220,38,38,0.3)]">
+        <span className="bg-red-900/40 border border-red-500/50 text-red-400 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold tracking-wide uppercase shadow-[0_0_10px_rgba(220,38,38,0.2)]">
           La Hackathon más brutal del año
         </span>
       </motion.div>
 
-      <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-10 max-w-5xl text-white leading-tight">
-        ¿Pilas para codear<br className="hidden md:block" />
-        <span className="bg-gradient-to-r from-red-400 via-red-600 to-red-800 bg-clip-text text-transparent drop-shadow-[0_0_25px_rgba(220,38,38,0.6)]"> o te vas a ahuevar?</span>
-      </h1>
+      {/* Logo | separador | titular (siempre en fila) */}
+      <div className="relative z-50 mb-4 sm:mb-5 flex w-full flex-row items-stretch justify-center gap-2 sm:gap-3 md:gap-4">
+        <div className="relative shrink-0 flex items-center justify-center">
+          <motion.div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-36 w-36 sm:h-40 sm:w-40 md:h-48 md:w-48 rounded-full bg-red-600/25 blur-2xl sm:blur-3xl"
+            animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.7, 0.4] }}
+            transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.img
+            src="/images.png"
+            alt="Krakedev Logo"
+            onClick={handleLogoClick}
+            className="relative h-28 w-auto max-h-[26vh] object-contain cursor-pointer sm:h-32 md:h-40 drop-shadow-[0_0_16px_rgba(220,38,38,0.75)]"
+            animate={{
+              y: [0, -8, 0],
+              rotate: [-3, 3, -3],
+              scale: [1, 1.03, 1],
+            }}
+            transition={{
+              duration: 3.2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
+          />
+        </div>
 
-      <div className="flex flex-col md:flex-row items-center gap-6 relative">
+        <div
+          className="shrink-0 w-px bg-gradient-to-b from-transparent via-red-500/55 to-transparent rounded-full"
+          aria-hidden
+        />
+
+        <div className="min-w-0 flex-1 flex items-center justify-center px-1 sm:px-2">
+          <motion.h1
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="text-center font-black tracking-tighter text-white leading-[1.08] text-2xl min-[380px]:text-3xl sm:text-4xl md:text-5xl [text-shadow:0_2px_32px_rgba(0,0,0,0.55)]"
+          >
+            ¿Pilas para codear{" "}
+            <span className="bg-gradient-to-r from-red-300 via-red-500 to-red-700 bg-clip-text text-transparent drop-shadow-[0_0_28px_rgba(220,38,38,0.75)]">
+              o te vas a ahuevar?
+            </span>
+          </motion.h1>
+        </div>
+      </div>
+
+      <div className="flex flex-row flex-nowrap items-stretch justify-center gap-2 sm:gap-2.5 relative w-full max-w-lg sm:max-w-xl">
         <motion.button
           onClick={onNext}
           animate={{ scale: yesScale }}
-          whileHover={{ scale: yesScale * 1.05 }}
-          whileTap={{ scale: yesScale * 0.95 }}
-          className="px-12 py-6 bg-gradient-to-r from-red-600 to-red-800 text-white font-black text-xl md:text-2xl rounded-2xl hover:from-red-500 hover:to-red-700 shadow-[0_0_40px_rgba(220,38,38,0.6)] transition-all z-50 relative border border-red-500/50"
+          whileHover={{ scale: yesScale * 1.02 }}
+          whileTap={{ scale: yesScale * 0.98 }}
+          className="min-h-[2.75rem] flex-1 min-w-0 basis-0 px-3 py-2.5 bg-gradient-to-r from-red-600 to-red-800 text-white font-black text-xs sm:text-sm rounded-lg hover:from-red-500 hover:to-red-700 shadow-[0_0_16px_rgba(220,38,38,0.35)] transition-colors z-50 relative border border-red-500/50 leading-snug"
         >
           ¡DE UNA, LE METO ÑEQUE!
         </motion.button>
@@ -119,7 +152,7 @@ export function ChallengeView({ onNext }: Props) {
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           onHoverStart={handleNoHover}
           onClick={handleNoHover}
-          className="px-10 py-5 bg-black/40 backdrop-blur-sm text-gray-500 font-bold text-lg md:text-xl rounded-2xl border border-gray-800 hover:text-white hover:border-gray-500 transition-colors"
+          className="min-h-[2.75rem] flex-1 min-w-0 basis-0 px-3 py-2.5 bg-black/40 backdrop-blur-sm text-gray-400 font-bold text-xs sm:text-sm rounded-lg border border-gray-800 hover:text-white hover:border-gray-500 transition-colors leading-snug"
         >
           Me ahuevo...
         </motion.button>

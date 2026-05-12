@@ -74,10 +74,23 @@ export default function AdminPanel() {
 
       <div className="max-w-5xl mx-auto relative z-10">
         <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-6">
-          <img 
-            src="/images.png" 
-            alt="Krakedev Logo" 
-            className="h-16 md:h-20 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,0,0,0.4)]" 
+          <motion.img
+            src="/images.png"
+            alt="Krakedev Logo"
+            className="h-16 md:h-20 w-auto object-contain drop-shadow-[0_0_15px_rgba(255,0,0,0.4)]"
+            animate={{
+              y: [0, -10, 0],
+              rotate: [-3, 3, -3],
+            }}
+            transition={{
+              duration: 3.5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+            whileHover={{
+              scale: 1.08,
+              filter: "drop-shadow(0 0 22px rgba(255,0,0,0.55))",
+            }}
           />
           <div className="flex gap-4">
             <button 
