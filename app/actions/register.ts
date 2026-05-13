@@ -42,18 +42,3 @@ export async function checkTeamExists(name: string) {
     return false;
   }
 }
-
-export async function checkTeamExists(name: string) {
-  try {
-    const { data } = await supabaseAdmin
-      .from('registros_hackaton')
-      .select('nombre_equipo')
-      .ilike('nombre_equipo', name.trim())
-      .maybeSingle();
-
-    return !!data;
-  } catch (err) {
-    console.error("Error al validar equipo:", err);
-    return false;
-  }
-}
