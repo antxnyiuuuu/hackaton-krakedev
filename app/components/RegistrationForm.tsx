@@ -108,10 +108,16 @@ export function RegistrationForm({ onBack }: Props) {
       }
 
       // 3. Insertar datos usando el Server Action
-      await registerTeam({
+      const result = await registerTeam({
         ...formData,
         nombre_equipo: formData.nombre_equipo.trim()
       });
+
+      if (!result.success) {
+        setError(result.error || "Hubo un error al registrar el equipo.");
+        setLoading(false);
+        return;
+      }
 
       setSuccess(true);
     } catch (err: any) {

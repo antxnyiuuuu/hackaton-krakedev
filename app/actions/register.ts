@@ -5,26 +5,36 @@ import { getSupabaseAdmin } from '@/utils/supabase/server';
 export async function registerTeam(formData: any) {
   try {
     const supabaseAdmin = getSupabaseAdmin();
+    
     const { error } = await supabaseAdmin
       .from('registros_hackaton')
       .insert([formData]);
 
     if (error) {
+      console.error("Error de Supabase controlado:", error);
+      
+      // 23505 es el código de error de duplicados en Postgres
       if (error.code === '23505') {
-        const errMsg = error.message || error.details || "";
-        if (errMsg.includes('nombre_equipo')) {
-          throw new Error("¡Pilas! Ese nombre de equipo ya existe.");
-        } else {
-          throw new Error("¡Pilas! Un dato (como el teléfono) ya está registrado en otro equipo.");
+        const detail = (error.details || error.message || "").toLowerCase();
+        
+        if (detail.includes('nombre_equipo')) {
+          return { success: false, error: "¡Ese nombre de equipo ya existe! Pónganse más creativos." };
         }
+        if (detail.includes('telefono')) {
+          return { success: false, error: "¡Pilas! Uno de los números de teléfono ya está registrado en otro equipo." };
+        }
+        return { success: false, error: "Este equipo o alguno de sus integrantes ya están registrados." };
       }
-      throw new Error(error.message);
+
+      return { success: false, error: error.message || "Error al guardar en la base de datos." };
     }
 
     return { success: true };
   } catch (err: any) {
-    console.error("Error en Server Action:", err);
-    throw err;
+    console.error("Error crítico en Server Action:", err);
+    // IMPORTANTE: Retornamos un objeto plano, nunca lanzamos error (throw) 
+    // para evitar que Next.js muestre la pantalla de error de producción.
+    return { success: false, error: "Error interno del servidor. Por favor, reintenta." };
   }
 }
 
