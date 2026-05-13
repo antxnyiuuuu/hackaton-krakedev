@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { supabase } from "@/utils/supabase/client";
+import { registerTeam, checkTeamExists } from "@/app/actions/register";
 import { User, Users, ShieldAlert } from "lucide-react";
 
 interface Props {
@@ -65,18 +65,9 @@ export function RegistrationForm({ onBack }: Props) {
     }
 
     if (name === "nombre_equipo" && value.trim() !== "") {
-      try {
-        const { data } = await supabase
-          .from("registros_hackaton")
-          .select("nombre_equipo")
-          .ilike("nombre_equipo", value.trim())
-          .maybeSingle();
-
-        if (data) {
-          newError = "¡Este equipo ya existe!";
-        }
-      } catch (err) {
-        console.error("Error al validar equipo:", err);
+      const exists = await checkTeamExists(value);
+      if (exists) {
+        newError = "¡Este equipo ya existe!";
       }
     }
 
@@ -116,34 +107,11 @@ export function RegistrationForm({ onBack }: Props) {
         return;
       }
 
-      // 3. Insertar datos en Supabase
-      const { error: supabaseError } = await supabase
-        .from("registros_hackaton")
-        .insert([{
-          ...formData,
-          nombre_equipo: formData.nombre_equipo.trim()
-        }]);
-
-      if (supabaseError) {
-        // 23505 es el código de PostgreSQL para "violación de restricción única"
-        if (supabaseError.code === '23505') {
-          const errMsg = supabaseError.message || supabaseError.details || "";
-
-          if (errMsg.includes('nombre_equipo')) {
-            setFieldErrors(prev => ({ ...prev, nombre_equipo: "¡Pilas! Ese nombre de equipo ya existe. Pónganse más creativos." }));
-          } else if (errMsg.includes('telefono_p1') || errMsg.includes('telefono_p2') || errMsg.includes('telefono_p3')) {
-            setFieldErrors(prev => ({ ...prev, telefono_p1: "¡Pilas! Este número ya está registrado en otro equipo." }));
-          } else {
-            setError("¡Pilas! Un dato ingresado ya está registrado. Revisen el formulario.");
-          }
-
-          setLoading(false);
-          return;
-        }
-
-        // Si es otro tipo de error
-        throw supabaseError;
-      }
+      // 3. Insertar datos usando el Server Action
+      await registerTeam({
+        ...formData,
+        nombre_equipo: formData.nombre_equipo.trim()
+      });
 
       setSuccess(true);
     } catch (err: any) {
