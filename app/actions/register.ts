@@ -1,15 +1,15 @@
 'use server'
 
-import { supabaseAdmin } from '@/utils/supabase/server';
+import { getSupabaseAdmin } from '@/utils/supabase/server';
 
 export async function registerTeam(formData: any) {
   try {
+    const supabaseAdmin = getSupabaseAdmin();
     const { error } = await supabaseAdmin
       .from('registros_hackaton')
       .insert([formData]);
 
     if (error) {
-      // Si el error es por duplicado (código 23505)
       if (error.code === '23505') {
         const errMsg = error.message || error.details || "";
         if (errMsg.includes('nombre_equipo')) {
@@ -30,6 +30,7 @@ export async function registerTeam(formData: any) {
 
 export async function checkTeamExists(name: string) {
   try {
+    const supabaseAdmin = getSupabaseAdmin();
     const { data } = await supabaseAdmin
       .from('registros_hackaton')
       .select('nombre_equipo')
