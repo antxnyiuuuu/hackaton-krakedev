@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { registerTeam, checkTeamExists } from "@/app/actions/register";
-import { User, Users, ShieldAlert } from "lucide-react";
+import { User, Users, ShieldAlert, Sparkles } from "lucide-react";
 
 interface Props {
   onBack?: () => void;
@@ -21,7 +21,7 @@ export function RegistrationForm({ onBack }: Props) {
     telefono_p1: "",
     nombre_p2: "",
     telefono_p2: "",
-    nombre_p3: "",
+    nombre_p3: "Antigravity",
     telefono_p3: "",
   });
 
@@ -47,8 +47,7 @@ export function RegistrationForm({ onBack }: Props) {
       } else {
         const phones = [
           { name: "telefono_p1", val: formData.telefono_p1 },
-          { name: "telefono_p2", val: formData.telefono_p2 },
-          { name: "telefono_p3", val: formData.telefono_p3 }
+          { name: "telefono_p2", val: formData.telefono_p2 }
         ];
         const duplicates = phones.filter(p => p.val === value && p.name !== name && p.val.trim() !== "");
         if (duplicates.length > 0) {
@@ -57,7 +56,7 @@ export function RegistrationForm({ onBack }: Props) {
       }
     }
 
-    if (name.startsWith("nombre_p") && value.trim() !== "") {
+    if (name.startsWith("nombre_p") && name !== "nombre_p3" && value.trim() !== "") {
       const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
       if (!nameRegex.test(value)) {
         newError = "Solo se permiten letras y espacios";
@@ -82,27 +81,33 @@ export function RegistrationForm({ onBack }: Props) {
     try {
       // 1. Validar formato de teléfono (empieza con 09 y tiene 10 dígitos)
       const phoneRegex = /^09\d{8}$/;
-      const phones = [formData.telefono_p1, formData.telefono_p2, formData.telefono_p3];
+      const phones = [formData.telefono_p1, formData.telefono_p2];
 
       if (!phones.every((p) => phoneRegex.test(p))) {
-        setError("Todos los teléfonos deben tener exactamente 10 dígitos y empezar con '09' y sin duplicados.");
+        setError("Todos los teléfonos deben tener exactamente 10 dígitos, empezar con '09' y sin duplicados.");
         setLoading(false);
         return;
       }
 
       // 1.5 Validar formato de nombres
       const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
-      const names = [formData.nombre_p1, formData.nombre_p2, formData.nombre_p3];
-      if (!names.every((n) => nameRegex.test(n))) {
-        setError("Los nombres de los participantes solo pueden contener letras y espacios.");
+      const humanNames = [formData.nombre_p1, formData.nombre_p2];
+      if (!humanNames.every((n) => nameRegex.test(n))) {
+        setError("Los nombres de los participantes humanos solo pueden contener letras y espacios.");
         setLoading(false);
         return;
       }
 
-      // 2. Validar que los teléfonos no se repitan en el mismo equipo
-      const uniquePhones = new Set(phones);
-      if (uniquePhones.size !== phones.length) {
+      // 2. Validar que los teléfonos no se repitan
+      if (formData.telefono_p1 === formData.telefono_p2) {
         setError("Los números de teléfono de los participantes no pueden repetirse.");
+        setLoading(false);
+        return;
+      }
+
+      // 2.5 Validar Copiloto IA seleccionado
+      if (!["Cursor", "Antigravity", "Claude"].includes(formData.nombre_p3)) {
+        setError("Por favor, selecciona a tu copiloto Inteligencia Artificial.");
         setLoading(false);
         return;
       }
@@ -110,7 +115,8 @@ export function RegistrationForm({ onBack }: Props) {
       // 3. Insertar datos usando el Server Action
       const result = await registerTeam({
         ...formData,
-        nombre_equipo: formData.nombre_equipo.trim()
+        nombre_equipo: formData.nombre_equipo.trim(),
+        telefono_p3: null, // ¡La IA no tiene teléfono!
       });
 
       if (!result.success) {
@@ -178,10 +184,10 @@ export function RegistrationForm({ onBack }: Props) {
         </button>
       )}
       <div className="w-full max-w-2xl backdrop-blur-md bg-black/60 border border-red-900/30 p-8 rounded-2xl shadow-[0_0_40px_rgba(220,38,38,0.15)] relative mt-10">
-        <h2 className="text-3xl font-black text-white mb-2 text-center uppercase tracking-wider">
+        <h2 className="text-4xl font-black text-white mb-3 text-center uppercase tracking-wider animate-pulse">
           Registro a la Hackathon
         </h2>
-        <p className="text-gray-400 text-center mb-8">Ingresa los datos de tu escuadrón</p>
+        <p className="text-base sm:text-lg text-gray-300 font-semibold text-center mb-10">Ingresa los datos de tu escuadrón para codear como locos</p>
 
         {error && (
           <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded mb-6">
@@ -191,7 +197,7 @@ export function RegistrationForm({ onBack }: Props) {
 
         <form onSubmit={onSubmit} className="space-y-6">
           <div className="bg-red-900/10 border border-red-900/30 p-6 rounded-2xl shadow-lg">
-            <label className="block text-sm font-medium text-red-500 mb-2 uppercase tracking-wide">Nombre del Equipo</label>
+            <label className="block text-xs sm:text-sm font-mono font-bold text-red-500 mb-2 uppercase tracking-wide">const team_name =</label>
             <input
               required
               name="nombre_equipo"
@@ -205,13 +211,13 @@ export function RegistrationForm({ onBack }: Props) {
           </div>
 
           <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-2xl shadow-lg hover:border-gray-700 transition-colors">
-            <h3 className="text-red-500 font-bold mb-4 uppercase tracking-wider flex items-center gap-2">
+            <h3 className="text-red-500 font-mono font-bold text-base sm:text-lg mb-4 uppercase tracking-wider flex items-center gap-2">
               <ShieldAlert className="w-5 h-5" />
-              Participante 1 (Líder)
+              {"[leader_p1]"} Participante 1 (Líder)
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre Completo</label>
+                <label className="block text-xs sm:text-sm font-mono font-bold text-gray-400 mb-1">let full_name =</label>
                 <input
                   required
                   name="nombre_p1"
@@ -224,7 +230,7 @@ export function RegistrationForm({ onBack }: Props) {
                 {fieldErrors.nombre_p1 && <p className="text-red-500 text-xs mt-1 font-bold">{fieldErrors.nombre_p1}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Teléfono</label>
+                <label className="block text-xs sm:text-sm font-mono font-bold text-gray-400 mb-1">let phone =</label>
                 <input
                   required
                   name="telefono_p1"
@@ -241,13 +247,13 @@ export function RegistrationForm({ onBack }: Props) {
           </div>
 
           <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-2xl shadow-lg hover:border-gray-700 transition-colors">
-            <h3 className="text-gray-300 font-bold mb-4 uppercase tracking-wider flex items-center gap-2">
+            <h3 className="text-gray-300 font-mono font-bold text-base sm:text-lg mb-4 uppercase tracking-wider flex items-center gap-2">
               <User className="w-5 h-5" />
-              Participante 2
+              {"[dev_p2]"} Participante 2
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre Completo</label>
+                <label className="block text-xs sm:text-sm font-mono font-bold text-gray-400 mb-1">let full_name =</label>
                 <input
                   required
                   name="nombre_p2"
@@ -260,7 +266,7 @@ export function RegistrationForm({ onBack }: Props) {
                 {fieldErrors.nombre_p2 && <p className="text-red-500 text-xs mt-1 font-bold">{fieldErrors.nombre_p2}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Teléfono</label>
+                <label className="block text-xs sm:text-sm font-mono font-bold text-gray-400 mb-1">let phone =</label>
                 <input
                   required
                   name="telefono_p2"
@@ -277,48 +283,60 @@ export function RegistrationForm({ onBack }: Props) {
           </div>
 
           <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-2xl shadow-lg hover:border-gray-700 transition-colors">
-            <h3 className="text-gray-300 font-bold mb-4 uppercase tracking-wider flex items-center gap-2">
-              <Users className="w-5 h-5" />
-              Participante 3
+            <h3 className="text-yellow-500 font-mono font-bold text-base sm:text-lg mb-2 uppercase tracking-wider flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-yellow-500" />
+              {"[copilot_p3]"} Copiloto IA (Integrante 3)
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Nombre Completo</label>
-                <input
-                  required
-                  name="nombre_p3"
-                  value={formData.nombre_p3}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={`w-full bg-black/50 border ${fieldErrors.nombre_p3 ? 'border-red-500' : 'border-gray-700'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all placeholder-gray-600`}
-                  placeholder="Ej: Linus Torvalds"
-                />
-                {fieldErrors.nombre_p3 && <p className="text-red-500 text-xs mt-1 font-bold">{fieldErrors.nombre_p3}</p>}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Teléfono</label>
-                <input
-                  required
-                  name="telefono_p3"
-                  type="tel"
-                  value={formData.telefono_p3}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  className={`w-full bg-black/50 border ${fieldErrors.telefono_p3 ? 'border-red-500' : 'border-gray-700'} rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all placeholder-gray-600`}
-                  placeholder="09XXXXXXXX"
-                />
-                {fieldErrors.telefono_p3 && <p className="text-red-500 text-xs mt-1 font-bold">{fieldErrors.telefono_p3}</p>}
-              </div>
+            <p className="text-gray-400 text-xs sm:text-sm mb-4 leading-relaxed font-semibold">
+              El tercer integrante del equipo debe ser una Inteligencia Artificial para potenciar sus desarrollos. ¡Selecciona tu copiloto favorito!
+            </p>
+            
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { name: "Cursor", desc: "El editor inteligente enfocado en velocidad.", color: "from-blue-600/20 to-blue-900/40 border-blue-500/40 text-blue-400 hover:border-blue-400" },
+                { name: "Antigravity", desc: "El agente poderoso de Deepmind para coding.", color: "from-red-600/20 to-red-900/40 border-red-500/40 text-red-400 hover:border-red-400" },
+                { name: "Claude", desc: "La IA poética con razonamiento avanzado.", color: "from-amber-600/20 to-amber-900/40 border-amber-500/40 text-amber-400 hover:border-amber-400" }
+              ].map((ai) => {
+                const isSelected = formData.nombre_p3 === ai.name;
+                return (
+                  <button
+                    key={ai.name}
+                    type="button"
+                    onClick={() => {
+                      setFormData(prev => ({ ...prev, nombre_p3: ai.name }));
+                      setFieldErrors(prev => ({ ...prev, nombre_p3: "" }));
+                    }}
+                    className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all cursor-pointer relative overflow-hidden group ${
+                      isSelected 
+                        ? `${ai.color} bg-black/60 shadow-[0_0_20px_rgba(220,38,38,0.15)] ring-2 ring-red-500/50` 
+                        : "border-gray-800 bg-black/30 text-gray-400 hover:bg-black/50 hover:text-white"
+                    }`}
+                  >
+                    <span className="font-mono text-sm sm:text-base font-black uppercase tracking-wider block mb-1">
+                      {ai.name}
+                    </span>
+                    <span className="text-[10px] text-gray-500 leading-normal hidden sm:block">
+                      {ai.desc}
+                    </span>
+                    {isSelected && (
+                      <span className="absolute top-1 right-1 text-[8px] font-mono bg-red-600 text-white font-extrabold px-1 rounded uppercase tracking-widest animate-pulse">
+                        Selected
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
             </div>
+            {fieldErrors.nombre_p3 && <p className="text-red-500 text-sm mt-3 font-bold animate-pulse text-center">{fieldErrors.nombre_p3}</p>}
           </div>
 
           <div className="pt-6">
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-red-600 hover:bg-red-700 text-white font-bold rounded text-lg transition-colors shadow-[0_0_15px_rgba(220,38,38,0.4)] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white font-black rounded-xl text-lg transition-all shadow-[0_0_20px_rgba(220,38,38,0.5)] hover:shadow-[0_0_30px_rgba(220,38,38,0.7)] disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer uppercase tracking-wider"
             >
-              {loading ? "Registrando..." : "Confirmar Registro"}
+              {loading ? "Registrando a los cracks..." : "Confirmar Registro"}
             </button>
           </div>
         </form>

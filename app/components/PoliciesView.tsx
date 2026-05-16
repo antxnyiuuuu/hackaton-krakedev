@@ -33,32 +33,64 @@ export function PoliciesView({ onNext, onBack }: Props) {
           <h2 className="text-3xl font-bold text-white uppercase tracking-wider">Políticas de la Hackathon</h2>
         </div>
 
-        <div className="space-y-4 h-64 overflow-y-auto pr-2 custom-scrollbar">
-          <div className="bg-gray-900/40 border border-gray-800 p-4 rounded-xl hover:border-gray-700 transition-colors">
-            <h3 className="text-red-500 font-bold mb-2">1. Compromiso Hacker</h3>
-            <p className="text-sm">
-              Al inscribirte a la hackathon, te comprometes a entregar todo tu ñeque durante las 48 horas. No se aceptan deserciones a menos que la computadora explote (literalmente).
+        <div className="space-y-5 h-[360px] overflow-y-auto pr-2 custom-scrollbar">
+          <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-xl hover:border-gray-700 transition-colors">
+            <h3 className="font-bold mb-3 text-lg sm:text-xl tracking-wide flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs sm:text-sm bg-red-950/60 border border-red-500/30 px-2.5 py-1 rounded text-red-400 font-bold">
+                const RULE_01
+              </span>
+              <span className="text-white font-extrabold text-xl">Desarrollo Exclusivo</span>
+            </h3>
+            <p className="text-[17px] sm:text-[19px] text-gray-200 font-medium leading-relaxed">
+              El proyecto deberá desarrollarse únicamente durante la hackatón.
             </p>
           </div>
           
-          <div className="bg-gray-900/40 border border-gray-800 p-4 rounded-xl hover:border-gray-700 transition-colors">
-            <h3 className="text-gray-300 font-bold mb-2">2. Propiedad Intelectual</h3>
-            <p className="text-sm">
-              Todo el código escrito durante el evento pertenece al equipo creador. Sin embargo, Krakedev se reserva el derecho de usar capturas y demostraciones para promocionar a los cracks del mañana.
+          <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-xl hover:border-gray-700 transition-colors">
+            <h3 className="font-bold mb-3 text-lg sm:text-xl tracking-wide flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs sm:text-sm bg-red-950/60 border border-red-500/30 px-2.5 py-1 rounded text-red-400 font-bold">
+                const RULE_02
+              </span>
+              <span className="text-white font-extrabold text-xl">Participación Presencial</span>
+            </h3>
+            <p className="text-[17px] sm:text-[19px] text-gray-200 font-medium leading-relaxed">
+              La participación es 100% presencial en la sede.
             </p>
           </div>
           
-          <div className="bg-gray-900/40 border border-gray-800 p-4 rounded-xl hover:border-gray-700 transition-colors">
-            <h3 className="text-gray-300 font-bold mb-2">3. Conducta de Supervivencia</h3>
-            <p className="text-sm">
-              Está estrictamente prohibido sabotear el código de otros equipos. El uso de energía oscura, ataques DDoS a compañeros o desconectar cables "por accidente" resultará en descalificación inmediata.
+          <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-xl hover:border-gray-700 transition-colors">
+            <h3 className="font-bold mb-3 text-lg sm:text-xl tracking-wide flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs sm:text-sm bg-red-950/60 border border-red-500/30 px-2.5 py-1 rounded text-red-400 font-bold">
+                const RULE_03
+              </span>
+              <span className="text-white font-extrabold text-xl">Testeo por Niños y Jóvenes</span>
+            </h3>
+            <p className="text-[17px] sm:text-[19px] text-gray-200 font-medium leading-relaxed">
+              Los juegos serán probados por niños y jóvenes de colegios con los que tenemos convenios.
             </p>
           </div>
           
-          <div className="bg-gray-900/40 border border-gray-800 p-4 rounded-xl hover:border-gray-700 transition-colors">
-            <h3 className="text-gray-300 font-bold mb-2">4. Presencialidad Total</h3>
-            <p className="text-sm">
-              Este evento es 100% presencial. Tendremos pizza, café infinito y colchonetas. Si sales del búnker antes de que suene la alarma final, tu equipo pierde puntos de honor.
+          <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-xl hover:border-gray-700 transition-colors">
+            <h3 className="font-bold mb-3 text-lg sm:text-xl tracking-wide flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs sm:text-sm bg-red-950/60 border border-red-500/30 px-2.5 py-1 rounded text-red-400 font-bold">
+                const RULE_04
+              </span>
+              <span className="text-white font-extrabold text-xl">Evaluación Real</span>
+            </h3>
+            <p className="text-[17px] sm:text-[19px] text-gray-200 font-medium leading-relaxed">
+              La evaluación será 100% real: los participantes calificarán los juegos con estrellas.
+            </p>
+          </div>
+          
+          <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-xl hover:border-gray-700 transition-colors">
+            <h3 className="font-bold mb-3 text-lg sm:text-xl tracking-wide flex flex-wrap items-center gap-2">
+              <span className="font-mono text-xs sm:text-sm bg-red-950/60 border border-red-500/30 px-2.5 py-1 rounded text-red-400 font-bold">
+                const RULE_05
+              </span>
+              <span className="text-white font-extrabold text-xl">Propiedad Intelectual</span>
+            </h3>
+            <p className="text-[17px] sm:text-[19px] text-gray-200 font-medium leading-relaxed">
+              Todo el código, assets, ideas y desarrollos generados durante la hackatón serán propiedad intelectual de Clear Minds.
             </p>
           </div>
         </div>

@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import { useRouter } from "next/navigation";
-import { ChevronDown, ChevronUp, Download, LogOut, Users } from "lucide-react";
+import { ChevronDown, ChevronUp, Download, LogOut, Users, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function AdminPanel() {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedRows, setExpandedRows] = useState<Record<number, boolean>>({});
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -53,6 +54,45 @@ export default function AdminPanel() {
 
   const toggleRow = (index: number) => {
     setExpandedRows(prev => ({ ...prev, [index]: !prev[index] }));
+  };
+
+  const handleDelete = async (id: any, nombreEquipo: string) => {
+    if (confirmDeleteId !== id) {
+      setConfirmDeleteId(id);
+      setTimeout(() => {
+        setConfirmDeleteId(prev => prev === id ? null : prev);
+      }, 4000);
+      return;
+    }
+
+    setConfirmDeleteId(null);
+    try {
+      const token = sessionStorage.getItem("admin_token");
+      const res = await fetch("/api/admin/exportar", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ id, nombre_equipo: nombreEquipo })
+      });
+
+      const json = await res.json();
+
+      if (res.ok && json.success) {
+        setData(prev => prev.filter(row => {
+          if (id !== undefined && id !== null) {
+            return row.id !== id;
+          }
+          return row.nombre_equipo !== nombreEquipo;
+        }));
+        alert(`El equipo "${nombreEquipo}" fue eliminado exitosamente.`);
+      } else {
+        alert(`Error al eliminar: ${json.error || "No autorizado"}`);
+      }
+    } catch (err) {
+      alert("Hubo un error inesperado al intentar eliminar el equipo.");
+    }
   };
 
   if (loading) {
@@ -150,9 +190,29 @@ export default function AdminPanel() {
                         <span className="font-bold text-gray-300">Líder:</span> {row.nombre_p1} <span className="text-gray-500 text-sm">({row.telefono_p1})</span>
                       </p>
                     </div>
-                    <button className="text-gray-500 hover:text-white transition-colors bg-gray-900/50 p-2 rounded-full border border-gray-800">
-                      {isExpanded ? <ChevronUp className="w-6 h-6" /> : <ChevronDown className="w-6 h-6" />}
-                    </button>
+                    <div className="flex items-center gap-3.5" onClick={(e) => e.stopPropagation()}>
+                      <button 
+                        onClick={() => handleDelete(row.id, row.nombre_equipo)}
+                        className={`transition-all duration-300 cursor-pointer flex items-center justify-center ${
+                          confirmDeleteId === row.id
+                            ? "bg-red-600 border-red-500 text-white animate-pulse shadow-[0_0_20px_rgba(220,38,38,0.5)] px-4 py-2 rounded-xl text-xs font-mono font-black uppercase tracking-wider"
+                            : "text-red-500 border-red-900/40 bg-red-950/10 hover:text-red-400 hover:bg-red-950/40 hover:scale-105 active:scale-95 p-2.5 rounded-full border shadow-[0_0_12px_rgba(220,38,38,0.1)]"
+                        }`}
+                        title={confirmDeleteId === row.id ? "Haz clic de nuevo para confirmar" : "Eliminar equipo"}
+                      >
+                        {confirmDeleteId === row.id ? (
+                          "¿CONFIRMAR BORRADO?"
+                        ) : (
+                          <Trash2 className="w-5 h-5" />
+                        )}
+                      </button>
+                      <button 
+                        onClick={() => toggleRow(i)}
+                        className="text-gray-400 hover:text-white transition-colors bg-gray-900/50 hover:bg-gray-800 p-2.5 rounded-full border border-gray-850 cursor-pointer"
+                      >
+                        {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                      </button>
+                    </div>
                   </div>
 
                   {/* Contenido expandible */}
@@ -176,8 +236,17 @@ export default function AdminPanel() {
                           {/* Participante 3 */}
                           <div className="bg-black/50 p-4 rounded-xl border border-gray-800">
                             <h3 className="text-sm font-bold text-gray-500 mb-2 uppercase tracking-wide">Participante 3</h3>
-                            <p className="text-white font-bold text-lg">{row.nombre_p3}</p>
-                            <p className="text-red-400 font-mono mt-1">{row.telefono_p3}</p>
+                            {["Cursor", "Antigravity", "Claude"].includes(row.nombre_p3) ? (
+                              <p className="text-yellow-500 font-mono font-bold text-lg flex items-center gap-1.5">
+                                <span className="inline-block w-2.5 h-2.5 rounded-full bg-yellow-500 animate-pulse shrink-0" />
+                                {row.nombre_p3} (Copiloto IA)
+                              </p>
+                            ) : (
+                              <>
+                                <p className="text-white font-bold text-lg">{row.nombre_p3}</p>
+                                <p className="text-red-400 font-mono mt-1">{row.telefono_p3 || "Sin teléfono"}</p>
+                              </>
+                            )}
                           </div>
                         </div>
                       </motion.div>

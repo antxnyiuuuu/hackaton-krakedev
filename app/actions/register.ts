@@ -53,3 +53,27 @@ export async function checkTeamExists(name: string) {
     return false;
   }
 }
+
+export async function deleteTeam(id: any, nombreEquipo: string) {
+  try {
+    const supabaseAdmin = getSupabaseAdmin();
+    let query = supabaseAdmin.from('registros_hackaton').delete();
+    
+    if (id !== undefined && id !== null) {
+      query = query.eq('id', id);
+    } else {
+      query = query.eq('nombre_equipo', nombreEquipo);
+    }
+
+    const { error } = await query;
+
+    if (error) {
+      console.error("Error al borrar equipo:", error);
+      return { success: false, error: error.message };
+    }
+    return { success: true };
+  } catch (err: any) {
+    console.error("Error crítico al borrar:", err);
+    return { success: false, error: "Error interno del servidor." };
+  }
+}

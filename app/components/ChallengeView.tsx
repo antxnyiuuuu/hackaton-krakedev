@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
@@ -8,7 +8,9 @@ interface Props {
 }
 
 export function ChallengeView({ onNext }: Props) {
-  const [noPosition, setNoPosition] = useState({ x: 0, y: 0 });
+  const [posPermiso, setPosPermiso] = useState({ x: 0, y: 0 });
+  const [posAhuevo, setPosAhuevo] = useState({ x: 0, y: 0 });
+  const [posLejos, setPosLejos] = useState({ x: 0, y: 0 });
   const [yesScale, setYesScale] = useState(1);
 
   // Estados para el Easter Egg Admin
@@ -17,6 +19,16 @@ export function ChallengeView({ onNext }: Props) {
   const [password, setPassword] = useState("");
   const [adminLoading, setAdminLoading] = useState(false);
   const [adminError, setAdminError] = useState("");
+
+  // Deshabilitar scroll y estiramiento de pantalla cuando la landing está activa
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    document.body.style.height = "100vh";
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.height = "";
+    };
+  }, []);
 
   const handleLogoClick = () => {
     setClickCount((prev) => {
@@ -58,15 +70,30 @@ export function ChallengeView({ onNext }: Props) {
     }
   };
 
-  const handleNoHover = () => {
+  const getRandomPosition = () => {
     if (typeof window !== "undefined") {
-      const maxX = window.innerWidth / 2 - 100;
-      const maxY = window.innerHeight / 2 - 50;
-      const x = (Math.random() - 0.5) * maxX * 1.8;
-      const y = (Math.random() - 0.5) * maxY * 1.8;
-      setNoPosition({ x, y });
-      setYesScale((prev) => prev * 1.4);
+      const maxX = window.innerWidth / 2 - 120;
+      const maxY = window.innerHeight / 2 - 60;
+      const x = (Math.random() - 0.5) * maxX * 1.6;
+      const y = (Math.random() - 0.5) * maxY * 1.6;
+      return { x, y };
     }
+    return { x: 0, y: 0 };
+  };
+
+  const handlePermisoHover = () => {
+    setPosPermiso(getRandomPosition());
+    setYesScale((prev) => Math.min(prev * 1.2, 2.5));
+  };
+
+  const handleAhuevoHover = () => {
+    setPosAhuevo(getRandomPosition());
+    setYesScale((prev) => Math.min(prev * 1.2, 2.5));
+  };
+
+  const handleLejosHover = () => {
+    setPosLejos(getRandomPosition());
+    setYesScale((prev) => Math.min(prev * 1.2, 2.5));
   };
 
   return (
@@ -80,19 +107,19 @@ export function ChallengeView({ onNext }: Props) {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay: 0.05 }}
-        className="mb-2.5 sm:mb-3 w-full flex justify-center"
+        className="mb-2 sm:mb-3 w-full flex justify-center"
       >
-        <span className="bg-red-900/40 border border-red-500/50 text-red-400 px-2.5 py-0.5 rounded-full text-[10px] sm:text-xs font-bold tracking-wide uppercase shadow-[0_0_10px_rgba(220,38,38,0.2)]">
-          La Hackathon más brutal del año
+        <span className="bg-red-950/60 border border-red-500/50 text-red-400 px-3 py-1 rounded-full text-xs sm:text-sm font-black tracking-widest uppercase shadow-[0_0_10px_rgba(220,38,38,0.2)]">
+          La hackatón más brutal del año
         </span>
       </motion.div>
 
-      {/* Logo | separador | titular (siempre en fila) */}
-      <div className="relative z-50 mb-4 sm:mb-5 flex w-full flex-row items-stretch justify-center gap-2 sm:gap-3 md:gap-4">
+      {/* Logo | separador | titular */}
+      <div className="relative z-50 mb-4 sm:mb-6 flex w-full flex-col md:flex-row items-center justify-center gap-3 sm:gap-4 md:gap-6">
         <div className="relative shrink-0 flex items-center justify-center">
           <motion.div
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-36 w-36 sm:h-40 sm:w-40 md:h-48 md:w-48 rounded-full bg-red-600/25 blur-2xl sm:blur-3xl"
+            className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44 rounded-full bg-red-600/20 blur-xl sm:blur-2xl"
             animate={{ scale: [1, 1.1, 1], opacity: [0.4, 0.7, 0.4] }}
             transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -100,11 +127,11 @@ export function ChallengeView({ onNext }: Props) {
             src="/images.png"
             alt="Krakedev Logo"
             onClick={handleLogoClick}
-            className="relative h-28 w-auto max-h-[26vh] object-contain cursor-pointer sm:h-32 md:h-40 drop-shadow-[0_0_16px_rgba(220,38,38,0.75)]"
+            className="relative h-16 w-auto max-h-[15vh] object-contain cursor-pointer sm:h-20 md:h-24 drop-shadow-[0_0_10px_rgba(220,38,38,0.7)]"
             animate={{
-              y: [0, -8, 0],
-              rotate: [-3, 3, -3],
-              scale: [1, 1.03, 1],
+              y: [0, -4, 0],
+              rotate: [-1.5, 1.5, -1.5],
+              scale: [1, 1.02, 1],
             }}
             transition={{
               duration: 3.2,
@@ -117,44 +144,97 @@ export function ChallengeView({ onNext }: Props) {
         </div>
 
         <div
-          className="shrink-0 w-px bg-gradient-to-b from-transparent via-red-500/55 to-transparent rounded-full"
+          className="hidden md:block shrink-0 w-px h-16 bg-gradient-to-b from-transparent via-red-500/55 to-transparent rounded-full"
           aria-hidden
         />
 
-        <div className="min-w-0 flex-1 flex items-center justify-center px-1 sm:px-2">
+        <div className="min-w-0 flex-1 flex flex-col items-center md:items-start text-center md:text-left px-1 sm:px-2">
           <motion.h1
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.12, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="text-center font-black tracking-tighter text-white leading-[1.08] text-2xl min-[380px]:text-3xl sm:text-4xl md:text-5xl [text-shadow:0_2px_32px_rgba(0,0,0,0.55)]"
+            className="font-black tracking-tighter text-white leading-[1.08] text-2xl min-[380px]:text-3xl sm:text-4xl md:text-5xl uppercase [text-shadow:0_2px_32px_rgba(0,0,0,0.55)]"
           >
-            ¿Pilas para codear{" "}
-            <span className="bg-gradient-to-r from-red-300 via-red-500 to-red-700 bg-clip-text text-transparent drop-shadow-[0_0_28px_rgba(220,38,38,0.75)]">
-              o te vas a ahuevar?
+            ¿Te atreves a enfrentar{" "}
+            <span className="bg-gradient-to-r from-red-300 via-red-500 to-red-700 bg-clip-text text-transparent drop-shadow-[0_0_15px_rgba(220,38,38,0.65)]">
+              el RETO?
             </span>
           </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 5 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="font-mono text-gray-400 font-bold text-[10px] sm:text-xs md:text-sm mt-2 uppercase tracking-widest bg-red-950/20 border border-red-900/30 px-3 py-1 rounded"
+          >
+            {"<developer_mode_active />"} Solo para desarrolladores ultra Pro
+          </motion.p>
         </div>
       </div>
 
-      <div className="flex flex-row flex-nowrap items-stretch justify-center gap-2 sm:gap-2.5 relative w-full max-w-lg sm:max-w-xl">
+      {/* Super Big Prize Banner */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.25 }}
+        className="w-full max-w-sm sm:max-w-md bg-gradient-to-br from-yellow-950/20 via-red-950/15 to-black/90 border border-yellow-500/50 p-4 sm:p-5 rounded-2xl shadow-[0_0_20px_rgba(234,179,8,0.15)] hover:shadow-[0_0_30px_rgba(234,179,8,0.25)] hover:border-yellow-400 transition-all duration-500 text-center mb-5 sm:mb-6 relative overflow-hidden group"
+      >
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,rgba(234,179,8,0.12)_0%,transparent_70%)] pointer-events-none" />
+        <span className="font-mono tracking-widest text-[11px] sm:text-xs uppercase block mb-1.5 font-black">
+          <span className="text-red-500">const</span> <span className="text-white">GRAND_PRIZE</span> <span className="text-gray-400">=</span>
+        </span>
+        <h2 className="font-mono font-black leading-none flex items-baseline justify-center gap-1.5 select-all py-1.5">
+          <span className="text-yellow-400 text-4xl min-[380px]:text-5xl sm:text-6xl drop-shadow-[0_0_25px_rgba(234,179,8,0.75)] tracking-tighter animate-pulse">
+            1.894.737.48
+          </span>
+          <span className="text-xs sm:text-sm md:text-base font-mono font-black text-yellow-500/80 uppercase tracking-widest self-end pb-1.5">
+            cop
+          </span>
+        </h2>
+        <p className="text-sm sm:text-base text-gray-300 mt-2 font-semibold leading-relaxed">
+          ¿Te vas a quedar fuera o vas a demostrar de qué estás hecho?
+        </p>
+      </motion.div>
+
+      {/* Buttons */}
+      <div className="grid grid-cols-2 gap-3 relative w-full max-w-lg sm:max-w-xl z-50">
         <motion.button
           onClick={onNext}
           animate={{ scale: yesScale }}
-          whileHover={{ scale: yesScale * 1.02 }}
+          whileHover={{ scale: yesScale * 1.03 }}
           whileTap={{ scale: yesScale * 0.98 }}
-          className="min-h-[2.75rem] flex-1 min-w-0 basis-0 px-3 py-2.5 bg-gradient-to-r from-red-600 to-red-800 text-white font-black text-xs sm:text-sm rounded-lg hover:from-red-500 hover:to-red-700 shadow-[0_0_16px_rgba(220,38,38,0.35)] transition-colors z-50 relative border border-red-500/50 leading-snug"
+          className="col-span-2 min-h-[3.25rem] px-4 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white font-black text-xs sm:text-sm rounded-xl hover:from-red-500 hover:to-red-700 shadow-[0_0_16px_rgba(220,38,38,0.35)] transition-all relative border border-red-500/50 uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
         >
-          ¡DE UNA, LE METO ÑEQUE!
+          DE UNA, ME APUNTO
         </motion.button>
 
         <motion.button
-          animate={{ x: noPosition.x, y: noPosition.y }}
+          animate={{ x: posPermiso.x, y: posPermiso.y }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          onHoverStart={handleNoHover}
-          onClick={handleNoHover}
-          className="min-h-[2.75rem] flex-1 min-w-0 basis-0 px-3 py-2.5 bg-black/40 backdrop-blur-sm text-gray-400 font-bold text-xs sm:text-sm rounded-lg border border-gray-800 hover:text-white hover:border-gray-500 transition-colors leading-snug"
+          onHoverStart={handlePermisoHover}
+          onClick={handlePermisoHover}
+          className="min-h-[2.75rem] px-3 py-2 bg-black/50 backdrop-blur-sm text-gray-400 font-bold text-xs sm:text-sm rounded-lg border border-gray-800 hover:text-white hover:border-gray-500 transition-colors cursor-pointer"
         >
-          Me ahuevo...
+          No me dan permiso
+        </motion.button>
+
+        <motion.button
+          animate={{ x: posAhuevo.x, y: posAhuevo.y }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          onHoverStart={handleAhuevoHover}
+          onClick={handleAhuevoHover}
+          className="min-h-[2.75rem] px-3 py-2 bg-black/50 backdrop-blur-sm text-gray-400 font-bold text-xs sm:text-sm rounded-lg border border-gray-800 hover:text-white hover:border-gray-500 transition-colors cursor-pointer"
+        >
+          Me ahuevo
+        </motion.button>
+
+        <motion.button
+          animate={{ x: posLejos.x, y: posLejos.y }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          onHoverStart={handleLejosHover}
+          onClick={handleLejosHover}
+          className="col-span-2 min-h-[2.75rem] px-3 py-2 bg-black/50 backdrop-blur-sm text-gray-400 font-bold text-xs sm:text-sm rounded-lg border border-gray-800 hover:text-white hover:border-gray-500 transition-colors cursor-pointer"
+        >
+          Vivo lejos
         </motion.button>
       </div>
 
