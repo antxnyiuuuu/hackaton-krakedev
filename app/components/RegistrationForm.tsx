@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { registerTeam, checkTeamExists } from "@/app/actions/register";
 import { User, Users, ShieldAlert, Sparkles } from "lucide-react";
@@ -27,6 +27,16 @@ export function RegistrationForm({ onBack }: Props) {
 
   const [isCustomAI, setIsCustomAI] = useState(false);
   const [customAIVal, setCustomAIVal] = useState("");
+
+  // Redireccionar automáticamente al grupo de WhatsApp al registrarse con éxito
+  useEffect(() => {
+    if (success) {
+      const timer = setTimeout(() => {
+        window.location.href = "https://chat.whatsapp.com/FOManik8DDYLkJ7JAy6ZPw";
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [success]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -153,7 +163,7 @@ export function RegistrationForm({ onBack }: Props) {
 
         <div className="flex flex-col gap-4 w-full">
           <a
-            href="https://wa.me/"
+            href="https://chat.whatsapp.com/FOManik8DDYLkJ7JAy6ZPw"
             target="_blank"
             rel="noreferrer"
             className="w-full py-4 bg-[#25D366] hover:bg-[#20b858] text-white font-bold rounded-lg text-lg transition-colors shadow-[0_0_15px_rgba(37,211,102,0.4)] flex items-center justify-center gap-2"
