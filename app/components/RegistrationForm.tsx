@@ -25,6 +25,9 @@ export function RegistrationForm({ onBack }: Props) {
     telefono_p3: "",
   });
 
+  const [isCustomAI, setIsCustomAI] = useState(false);
+  const [customAIVal, setCustomAIVal] = useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -106,8 +109,8 @@ export function RegistrationForm({ onBack }: Props) {
       }
 
       // 2.5 Validar Copiloto IA seleccionado
-      if (!["Cursor", "Antigravity", "Claude"].includes(formData.nombre_p3)) {
-        setError("Por favor, selecciona a tu copiloto Inteligencia Artificial.");
+      if (!formData.nombre_p3 || formData.nombre_p3.trim() === "" || formData.nombre_p3 === "Otro") {
+        setError("Por favor, escribe o selecciona a tu copiloto Inteligencia Artificial.");
         setLoading(false);
         return;
       }
@@ -291,19 +294,26 @@ export function RegistrationForm({ onBack }: Props) {
               El tercer integrante del equipo debe ser una Inteligencia Artificial para potenciar sus desarrollos. ¡Selecciona tu copiloto favorito!
             </p>
             
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { name: "Cursor", desc: "El editor inteligente enfocado en velocidad.", color: "from-blue-600/20 to-blue-900/40 border-blue-500/40 text-blue-400 hover:border-blue-400" },
                 { name: "Antigravity", desc: "El agente poderoso de Deepmind para coding.", color: "from-red-600/20 to-red-900/40 border-red-500/40 text-red-400 hover:border-red-400" },
-                { name: "Claude", desc: "La IA poética con razonamiento avanzado.", color: "from-amber-600/20 to-amber-900/40 border-amber-500/40 text-amber-400 hover:border-amber-400" }
+                { name: "Claude", desc: "La IA poética con razonamiento avanzado.", color: "from-amber-600/20 to-amber-900/40 border-amber-500/40 text-amber-400 hover:border-amber-400" },
+                { name: "Otro", desc: "Escribe tu propia Inteligencia Artificial.", color: "from-purple-600/20 to-purple-900/40 border-purple-500/40 text-purple-400 hover:border-purple-400" }
               ].map((ai) => {
-                const isSelected = formData.nombre_p3 === ai.name;
+                const isSelected = ai.name === "Otro" ? isCustomAI : (!isCustomAI && formData.nombre_p3 === ai.name);
                 return (
                   <button
                     key={ai.name}
                     type="button"
                     onClick={() => {
-                      setFormData(prev => ({ ...prev, nombre_p3: ai.name }));
+                      if (ai.name === "Otro") {
+                        setIsCustomAI(true);
+                        setFormData(prev => ({ ...prev, nombre_p3: customAIVal }));
+                      } else {
+                        setIsCustomAI(false);
+                        setFormData(prev => ({ ...prev, nombre_p3: ai.name }));
+                      }
                       setFieldErrors(prev => ({ ...prev, nombre_p3: "" }));
                     }}
                     className={`flex flex-col items-center justify-center p-4 rounded-xl border text-center transition-all cursor-pointer relative overflow-hidden group ${
@@ -315,7 +325,7 @@ export function RegistrationForm({ onBack }: Props) {
                     <span className="font-mono text-sm sm:text-base font-black uppercase tracking-wider block mb-1">
                       {ai.name}
                     </span>
-                    <span className="text-[10px] text-gray-500 leading-normal hidden sm:block">
+                    <span className="text-[10px] text-gray-500 leading-normal block">
                       {ai.desc}
                     </span>
                     {isSelected && (
@@ -327,6 +337,23 @@ export function RegistrationForm({ onBack }: Props) {
                 );
               })}
             </div>
+
+            {isCustomAI && (
+              <div className="mt-4 bg-black/40 border border-gray-800 p-4 rounded-xl animate-fadeIn">
+                <label className="block text-xs sm:text-sm font-mono font-bold text-gray-400 mb-2">let custom_copilot =</label>
+                <input
+                  required
+                  value={customAIVal}
+                  onChange={(e) => {
+                    setCustomAIVal(e.target.value);
+                    setFormData(prev => ({ ...prev, nombre_p3: e.target.value }));
+                  }}
+                  className="w-full bg-black/50 border border-gray-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-red-500 focus:ring-1 focus:ring-red-500 transition-all placeholder-gray-600 font-bold"
+                  placeholder="Ej: ChatGPT, Gemini, Llama 3..."
+                />
+              </div>
+            )}
+            
             {fieldErrors.nombre_p3 && <p className="text-red-500 text-sm mt-3 font-bold animate-pulse text-center">{fieldErrors.nombre_p3}</p>}
           </div>
 

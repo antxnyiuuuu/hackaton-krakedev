@@ -80,7 +80,7 @@ export function PrizeView({ onNext, onBack }: Props) {
           <div className="bg-black/35 border border-gray-800/80 p-4 rounded-xl space-y-2">
             <span className="text-red-400 font-mono text-xs uppercase tracking-wider block font-bold">const ACCESS_LIST =</span>
             <p className="text-base text-white font-semibold leading-relaxed">
-              Integrantes y ex-integrantes de <span className="text-red-400 font-black">Clear</span>, colaboradores bajo honorarios, allegados y estudiantes destacados de los módulos avanzados de <span className="text-red-400 font-black">Krake Dev</span>.
+              Integrantes y ex-integrantes de <span className="text-red-400 font-black">Clear</span> y estudiantes destacados de los módulos avanzados de <span className="text-red-400 font-black">Krake Dev</span>.
             </p>
           </div>
           <div className="bg-gradient-to-r from-red-950/30 to-black border border-red-800/30 p-3.5 rounded-xl text-center">
@@ -102,21 +102,13 @@ export function PrizeView({ onNext, onBack }: Props) {
       content: (
         <div className="space-y-4">
           <p className="text-gray-200 text-base sm:text-lg leading-relaxed">
-            El reto es directo: Desarrollar juegos simples en <code className="font-mono bg-red-950/45 border border-red-900/30 px-2 py-0.5 rounded text-red-400 font-bold">"JavaScript puro"</code> diseñados para niños y jóvenes de <code className="font-mono bg-black/50 border border-gray-850 px-2 py-0.5 rounded text-white font-bold">6_to_17_years</code>.
+            El reto es directo: Desarrollar juegos simples diseñados para niños y jóvenes de <code className="font-mono bg-black/50 border border-gray-850 px-2 py-0.5 rounded text-white font-bold">6_to_17_years</code>.
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="bg-black/30 border border-gray-800 p-4.5 rounded-lg flex gap-2.5">
-              <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-              <span className="text-xs sm:text-sm text-gray-200">
-                <strong className="text-white">Evaluación Real:</strong> Calificado con estrellas por niños de colegios bajo convenio.
-              </span>
-            </div>
-            <div className="bg-black/30 border border-gray-800 p-4.5 rounded-lg flex gap-2.5">
-              <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-              <span className="text-xs sm:text-sm text-gray-200">
-                <strong className="text-white">Propiedad Intelectual:</strong> Todo el código y assets pertenecen a Clear Minds.
-              </span>
-            </div>
+          <div className="bg-black/30 border border-gray-800 p-4.5 rounded-lg flex gap-2.5">
+            <CheckCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+            <span className="text-xs sm:text-sm text-gray-200">
+              <strong className="text-white">Evaluación Real:</strong> Calificado con estrellas por niños de colegios bajo convenio.
+            </span>
           </div>
           <div className="bg-red-950/35 border border-red-900/50 p-3.5 rounded-lg text-center">
             <span className="font-mono text-xs text-red-400 block uppercase tracking-widest font-bold">
@@ -308,6 +300,14 @@ export function PrizeView({ onNext, onBack }: Props) {
                 </span>
                 <span className="text-white font-mono font-bold text-sm sm:text-base bg-red-950/20 border border-red-900/20 px-2 py-1 rounded">
                   <TypewriterText text='"Domingo 24 Mayo — 10h00";' speed={25} delay={350} />
+                </span>
+              </div>
+              <div className="bg-black/45 border border-gray-800/60 p-4 rounded-xl flex flex-col gap-1 hover:border-red-900/40 hover:bg-black/60 transition-all">
+                <span className="text-red-400 font-mono text-[10px] tracking-wider uppercase font-bold">
+                  <TypewriterText text="let location =" speed={20} />
+                </span>
+                <span className="text-white font-mono font-bold text-sm sm:text-base bg-red-950/20 border border-red-900/20 px-2 py-1 rounded">
+                  <TypewriterText text='"Quito, por definir";' speed={25} delay={350} />
                 </span>
               </div>
             </div>

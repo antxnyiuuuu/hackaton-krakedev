@@ -82,17 +82,7 @@ export function PoliciesView({ onNext, onBack }: Props) {
             </p>
           </div>
           
-          <div className="bg-gray-900/40 border border-gray-800 p-6 rounded-xl hover:border-gray-700 transition-colors">
-            <h3 className="font-bold mb-3 text-lg sm:text-xl tracking-wide flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs sm:text-sm bg-red-950/60 border border-red-500/30 px-2.5 py-1 rounded text-red-400 font-bold">
-                const RULE_05
-              </span>
-              <span className="text-white font-extrabold text-xl">Propiedad Intelectual</span>
-            </h3>
-            <p className="text-[17px] sm:text-[19px] text-gray-200 font-medium leading-relaxed">
-              Todo el código, assets, ideas y desarrollos generados durante la hackatón serán propiedad intelectual de Clear Minds.
-            </p>
-          </div>
+
         </div>
 
         <div className="mt-10 flex justify-end">
